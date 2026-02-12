@@ -5,7 +5,6 @@ import java.util.ArrayList; //Import
  public class Main {
      public static void main(String[] args) {
 
-
          // --- 1. CREACIÓN DE CONCIERTOS ---
          Concierto c1 = new Concierto("Coldplay", "Madrid", 100.0, 50000, new ArrayList<>(), true);
          Concierto c2 = new Concierto("Estopa", "Barcelona", 50.0, 20000, new ArrayList<>(), true);
@@ -44,10 +43,10 @@ import java.util.ArrayList; //Import
          System.out.println("\n--- PROCESO DE VALORACIÓN ---");
 
          // --- 4. VALORACIONES (1 por usuario) ---
-         u1.valorar(c1, 9);  // Ana valora Coldplay con un 9
-         u2.valorar(c2, 11); // Error: Valoración fuera de rango (0-10)
-         u2.valorar(c2, 8);  // Carlos valora Estopa con un 8
-         u3.valorar(c3, 5);  // Error: Lucía no ha asistido a Taylor Swift (el concierto estaba inactivo)
+         u1.valorar(c1, 9);
+         u2.valorar(c2, 11);
+         u2.valorar(c2, 8);
+         u3.valorar(c3, 5);
 
          // --- 5. COMPROBACIÓN FINAL ---
          System.out.println("--- RESUMEN FINAL ---");
