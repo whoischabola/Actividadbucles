@@ -1,3 +1,5 @@
+import Exceptions.CeroEntradasException;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -5,8 +7,8 @@ public class Concierto {
     private String artista;
     private String ciudad;
     private double precioBase;
-    private int aforoMaximo;
-    private ArrayList<Entrada> entradasVendidas;
+    public int aforoMaximo;
+    public ArrayList<Entrada> entradasVendidas;
     private boolean activo;
 
     // Constructor vacio
@@ -74,35 +76,46 @@ public class Concierto {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true; // Buena práctica
         if (o == null || getClass() != o.getClass()) return false;
         Concierto concierto = (Concierto) o;
-        return Double.compare(precioBase, concierto.precioBase) == 0 && aforoMaximo == concierto.aforoMaximo && activo == concierto.activo && Objects.equals(artista, concierto.artista) && Objects.equals(ciudad, concierto.ciudad) && Objects.equals(entradasVendidas, concierto.entradasVendidas);
+        // Quitamos la comparación de 'entradasVendidas'
+        return Double.compare(precioBase, concierto.precioBase) == 0 &&
+                aforoMaximo == concierto.aforoMaximo &&
+                activo == concierto.activo &&
+                Objects.equals(artista, concierto.artista) &&
+                Objects.equals(ciudad, concierto.ciudad);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(artista, ciudad, precioBase, aforoMaximo, entradasVendidas, activo);
+        // Quitamos 'entradasVendidas' de aquí
+        return Objects.hash(artista, ciudad, precioBase, aforoMaximo, activo);
     }
+
 
     public double calcularRecaudacion() {
         double total = 0;
-        for (Entrada e : entradasVendidas) {
+        for (Entrada e : this.entradasVendidas()) {
             total += e.getPrecioTotal(); // Llama al método de la clase Entrada
         }
         return total;
     }
+
+    private Entrada[] entradasVendidas() {
+        return null;
+    }
+
     public double calcularPrecioMedio() {
         // 1. Verificamos si la lista está vacía para evitar dividir por cero
-        // Si no te detecta .isEmpty(), usa .size() == 0
         if (entradasVendidas.size() == 0) {
-            return 0.0;
+            throw new CeroEntradasException("Error: el cocnierto no tiene entradas disponibles");
+
         }
+        double recaudacionTotal = calcularRecaudacion(); // Obtenemos el dinero total recaudado.
+        return recaudacionTotal / entradasVendidas.size(); // Lo dividimos entre las entradas vendidas.
 
-        // 2. Obtenemos el dinero total (que ya contempla los distintos precios)
-        double recaudacionTotal = calcularRecaudacion();
 
-        // 3. Dividimos entre el número de entradas vendidas
-        return recaudacionTotal / entradasVendidas.size();
     }
 
 
@@ -112,6 +125,7 @@ public class Concierto {
             return true;  // ¡Hay sitio!
         } else {
             return false; // Está lleno.
+
         }
     }
     @Override
@@ -119,7 +133,7 @@ public class Concierto {
         return "Concierto de " + artista + " en " + ciudad;
     }
 
-        }
+
 
 
 

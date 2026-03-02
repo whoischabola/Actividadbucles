@@ -1,3 +1,5 @@
+import Exceptions.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -5,9 +7,9 @@ import java.util.HashSet;
 public class Usuario {
     private String nombre;
     private int edad;
-    private ArrayList<Entrada> entradasCompradas;
-    private HashSet<Concierto> conciertosAsistidos;
-    private HashMap<Concierto, Integer> valoraciones;
+    public ArrayList<Entrada> entradasCompradas;
+    public HashSet<Concierto> conciertosAsistidos;
+    public HashMap<Concierto, Integer> valoraciones;
 
     // Constructor vacío
 
@@ -66,23 +68,21 @@ public class Usuario {
     /**
      * Gestiona la compra de una entrada realizando todas las validaciones previas.
      */
-    public void comprarEntrada(Concierto concierto, Entrada.TipoEntrada tipo) {
+    public void comprarEntrada(Concierto concierto, Entrada.TipoEntrada tipo)
+    throws ConciertoInactivoException, ConciertoYaAsistidoException, AforoCompletoException {
         // 1. Comprobar si el concierto está activo
         if (!concierto.isActivo()) {
-            System.out.println("Error: El concierto no está activo.");
-            return; // Detiene la ejecución
+            throw new ConciertoInactivoException("Error: El concierto de " + concierto.getArtista() + "no está activo");
         }
 
-        // 2. Comprobar si el usuario ya ha asistido (está en su HashSet)
+        // 2. Comprobar si el usuario ya ha asistido
         if (this.conciertosAsistidos.contains(concierto)) {
-            System.out.println("Error: Ya has asistido a este concierto anteriormente.");
-            return;
+            throw new ConciertoYaAsistidoException("Error: Ya has asistido al cocnierto de " + concierto.getArtista() + ".");
         }
 
         // 3. Comprobar si hay entradas disponibles
         if (!concierto.entradasDisponibles()) {
-            System.out.println("Error: No quedan entradas disponibles para este concierto.");
-            return;
+            throw new AforoCompletoException("Error: No quedan entradas para el concierto de " + concierto.getArtista() + ".");
         }
 
         // 4. Crear el objeto Entrada
@@ -103,17 +103,16 @@ public class Usuario {
     /**
      * Registra o modifica una valoración para un concierto asistido.
      */
-    public void valorar(Concierto concierto, int valoracion) {
+    public void valorar(Concierto concierto, int valoracion)
+    throws ConciertoNoAsistidoException, ValoracionIncorrectaException {
         // 1. Comprobar si ha asistido al concierto
         if (!this.conciertosAsistidos.contains(concierto)) {
-            System.out.println("Error: No puedes valorar un concierto al que no has asistido.");
-            return;
+            throw new ConciertoNoAsistidoException("Error: No puedes valorar un concierto al que no has asistido.");
         }
 
         // 2. Comprobar rango de valoración (0-10)
         if (valoracion < 0 || valoracion > 10) {
-            System.out.println("Error: La valoración debe estar entre 0 y 10.");
-            return;
+            throw new ValoracionIncorrectaException("Valoracion incorrecta");
         }
 
         // 3. Añadir o modificar en el HashMap

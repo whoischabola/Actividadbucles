@@ -9,6 +9,7 @@ public class Entrada {
     // Constructor vacío
     public Entrada() {
     }
+
     // Constructor completo
     public Entrada(Concierto concierto, TipoEntrada tipo) {
         this.concierto = concierto;
